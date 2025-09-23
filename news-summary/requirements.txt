@@ -1,0 +1,7 @@
+requests
+beautifulsoup4
+slack_sdk
+transformers
+torch
+sentencepiece
+python-dotenv
