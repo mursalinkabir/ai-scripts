@@ -34,13 +34,13 @@ This script requires you to set up a few environment variables for the API keys 
 Create a file named `.env` in the `news-summary` directory and add the following content:
 
 ```
-WORLD_NEWS_API_KEY="your_world_news_api_key"
+NEWS_API_KEY="your_news_api_key"
 SLACK_BOT_TOKEN="your_slack_bot_token"
 SLACK_CHANNEL_ID="your_slack_channel_id"
 ```
 
 Replace the placeholder values with your actual credentials:
-- `your_world_news_api_key`: Your API key from [World News API](https://worldnewsapi.com/).
+- `your_news_api_key`: Your API key from [NewsAPI](https://newsapi.org/).
 - `your_slack_bot_token`: Your Slack bot token. You can create a new Slack app and get the token.
 - `your_slack_channel_id`: The ID of the Slack channel where you want to post the news.
 
