@@ -47,7 +47,7 @@ def get_top_technology_news():
         "sortBy": "popularity",
         "category": "technology",
         "apiKey": api_key,
-        "pageSize": 5
+        "pageSize": 10
     }
     headers = {
         "User-Agent": "test"
@@ -80,7 +80,7 @@ def summarize_text(text):
 
         genai.configure(api_key=gemini_api_key)
         model = genai.GenerativeModel('gemini-2.5-flash')
-        response = model.generate_content(f"Summarize the following news in a concise paragraph: {text}")
+        response = model.generate_content(f"Synthesize the following list of news articles into a cohesive, multi-paragraph summary that identifies the main themes and connections, rather than summarizing each one individually. format the output in bullet points: {text}")
         return response.text
     except Exception as e:
         print(f"Error summarizing text: {e}")
@@ -114,7 +114,7 @@ if __name__ == "__main__":
         articles = get_top_technology_news()
         if articles:
             all_descriptions = "\n\n".join(
-                [article['description'] for article in articles if article.get('description')]
+                [f"{article['title']}: {article['description']}" for article in articles if article.get('title') and article.get('description')]
             )
             if all_descriptions:
                 summary = summarize_text(all_descriptions)
