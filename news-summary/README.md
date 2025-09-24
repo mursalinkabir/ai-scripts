@@ -1,6 +1,6 @@
 # News Summary Script
 
-This script fetches top 5 technology news, summarizes them using Gemini Pro, and posts the summaries to a Slack channel.
+This script fetches top 10 technology news and posts them to a Slack channel.
 
 ## Setup Instructions
 
@@ -37,14 +37,12 @@ Create a file named `.env` in the `news-summary` directory and add the following
 NEWS_API_KEY="your_news_api_key"
 SLACK_BOT_TOKEN="your_slack_bot_token"
 SLACK_CHANNEL_ID="your_slack_channel_id"
-GEMINI_API_KEY="your_gemini_api_key"
 ```
 
 Replace the placeholder values with your actual credentials:
 - `your_news_api_key`: Your API key from [NewsAPI](https://newsapi.org/).
 - `your_slack_bot_token`: Your Slack bot token. You can create a new Slack app and get the token.
 - `your_slack_channel_id`: The ID of the Slack channel where you want to post the news.
-- `your_gemini_api_key`: Your API key for Gemini Pro.
 
 ### 4. Run the Script
 
@@ -53,7 +51,7 @@ Once you have completed the setup, you can run the script with the following com
 python news_summary.py
 ```
 
-The script will fetch the latest technology news, summarize them, and post the summaries to your configured Slack channel.
+The script will fetch the latest technology news and post them to your configured Slack channel.
 
 ### 5. Automate with Cronjob on AlmaLinux
 
