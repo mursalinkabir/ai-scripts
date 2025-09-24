@@ -1,6 +1,6 @@
 """
-This script fetches top news from CNN and BBC, summarizes them using Gemini Pro,
-and posts the summaries to a Slack channel.
+This script fetches top 5 technology news, summarizes them using Gemini Pro,
+and posts the summary to a Slack channel.
 
 To use this script, you need to set the following environment variables:
 - NEWS_API_KEY: Your API key for the News API.
@@ -10,10 +10,10 @@ To use this script, you need to set the following environment variables:
 
 You can create a .env file in the same directory as this script and add the
 environment variables there, for example:
-NEWS_API_KEY=\"your_api_key\"
-SLACK_BOT_TOKEN=\"your_slack_bot_token\"
-SLACK_CHANNEL_ID=\"your_slack_channel_id\"
-GEMINI_API_KEY=\"your_gemini_api_key\"
+NEWS_API_KEY="your_api_key"
+SLACK_BOT_TOKEN="your_slack_bot_token"
+SLACK_CHANNEL_ID="your_slack_channel_id"
+GEMINI_API_KEY="your_gemini_api_key"
 
 The script will then automatically load these variables.
 """
@@ -23,15 +23,13 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
+from datetime import date, timedelta
 
 load_dotenv()
 
-def get_news(source):
+def get_top_technology_news():
     """
-    Fetches news from a given source using the News API.
-
-    Args:
-        source (str): The source to fetch news from (e.g., "cnn").
+    Fetches top 5 technology news from the past day in the US.
 
     Returns:
         list: A list of news articles, or an empty list if an error occurs.
@@ -42,18 +40,26 @@ def get_news(source):
         return []
 
     url = "https://newsapi.org/v2/top-headlines"
+    yesterday = date.today() - timedelta(days=1)
     params = {
-        "sources": source,
+        "country": "us",
+        "from": yesterday.strftime('%Y-%m-%d'),
+        "sortBy": "popularity",
+        "category": "technology",
         "apiKey": api_key,
+        "pageSize": 5
+    }
+    headers = {
+        "User-Agent": "test"
     }
 
     try:
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()  # Raise an exception for bad status codes
         data = response.json()
         return data.get("articles", [])
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching news from {source}: {e}")
+        print(f"Error fetching technology news: {e}")
         return []
 
 def summarize_text(text):
@@ -74,7 +80,7 @@ def summarize_text(text):
 
         genai.configure(api_key=gemini_api_key)
         model = genai.GenerativeModel('gemini-2.5-flash')
-        response = model.generate_content(f"Summarize the following news article in 1-2 sentences: {text}")
+        response = model.generate_content(f"Summarize the following news in a concise paragraph: {text}")
         return response.text
     except Exception as e:
         print(f"Error summarizing text: {e}")
@@ -100,30 +106,18 @@ def post_to_slack(channel_id, message):
     except SlackApiError as e:
         print(f"Error posting to Slack: {e.response['error']}")
 
-def process_and_post_news(channel_id, source_id, source_name):
-    """
-    Fetches, summarizes, and posts news from a given source.
-
-    Args:
-        channel_id (str): The ID of the Slack channel.
-        source_id (str): The ID of the news source (e.g., "cnn").
-        source_name (str): The name of the news source (e.g., "CNN").
-    """
-    news_articles = get_news(source_id)
-    if news_articles:
-        for article in news_articles:
-            text_to_summarize = article.get('content') or article.get('description')
-            if text_to_summarize:
-                summary = summarize_text(text_to_summarize)
-                if summary is not None:
-                    message = f"📰 *{source_name}:* {article['title']}\n\n{summary}"
-                    post_to_slack(channel_id, message)
-
 if __name__ == "__main__":
     channel_id = os.getenv("SLACK_CHANNEL_ID")
     if not channel_id:
         print("Error: SLACK_CHANNEL_ID environment variable not set.")
     else:
-        news_sources = [("cnn", "CNN"), ("bbc-news", "BBC News")]
-        for source_id, source_name in news_sources:
-            process_and_post_news(channel_id, source_id, source_name)
+        articles = get_top_technology_news()
+        if articles:
+            all_descriptions = "\n\n".join(
+                [article['description'] for article in articles if article.get('description')]
+            )
+            if all_descriptions:
+                summary = summarize_text(all_descriptions)
+                if summary:
+                    message = f"📰 *Top 5 Tech News Summary:*\n\n{summary}"
+                    post_to_slack(channel_id, message)
