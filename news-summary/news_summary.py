@@ -89,9 +89,9 @@ def get_top_japan_news():
         print(f"Error fetching news from Japan: {e}")
         return []
 
-def get_top_german_business_news():
+def get_top_us_business_news():
     """
-    Fetches top 7 business news from Germany.
+    Fetches top 7 business news from the US.
 
     Returns:
         list: A list of news articles, or an empty list if an error occurs.
@@ -103,7 +103,7 @@ def get_top_german_business_news():
 
     url = "https://newsapi.org/v2/top-headlines"
     params = {
-        "country": "de",
+        "country": "us",
         "category": "business",
         "apiKey": api_key,
         "pageSize": 7
@@ -118,7 +118,7 @@ def get_top_german_business_news():
         data = response.json()
         return data.get("articles", [])
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching business news from Germany: {e}")
+        print(f"Error fetching business news from the US: {e}")
         return []
 
 def post_to_slack(channel_id, message):
@@ -176,11 +176,11 @@ if __name__ == "__main__":
                 message = f"📰 *Top 7 News from Japan*\n\n{message_body}"
                 post_to_slack(channel_id, message)
 
-        # Fetch and post top 7 German business news
-        german_articles = get_top_german_business_news()
-        if german_articles:
+        # Fetch and post top 7 US business news
+        us_articles = get_top_us_business_news()
+        if us_articles:
             message_body = ""
-            for article in german_articles:
+            for article in us_articles:
                 title = article.get('title')
                 description = article.get('description')
                 url = article.get('url')
@@ -188,5 +188,5 @@ if __name__ == "__main__":
                     message_body += f"• *<{url}|{title}>*\n_{description}_\n\n"
 
             if message_body:
-                message = f"📰 *Top 7 Business News from Germany*\n\n{message_body}"
+                message = f"📰 *Top 7 Business News from the US*\n\n{message_body}"
                 post_to_slack(channel_id, message)
