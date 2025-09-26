@@ -25,7 +25,7 @@ load_dotenv()
 
 def get_top_technology_news():
     """
-    Fetches top 10 technology news from the past day in the US.
+    Fetches top 5 technology news from the past day in the US.
 
     Returns:
         list: A list of news articles, or an empty list if an error occurs.
@@ -43,7 +43,7 @@ def get_top_technology_news():
         "sortBy": "popularity",
         "category": "technology",
         "apiKey": api_key,
-        "pageSize": 10
+        "pageSize": 5
     }
     headers = {
         "User-Agent": "test"
