@@ -1,6 +1,8 @@
 # News Summary Script
 
-This script fetches top 10 technology news and posts them to a Slack channel.
+## Purpose
+
+This script fetches the top 10 technology news articles from the previous day and posts a formatted summary to a specified Slack channel. It is designed to be automated, for example, by using a cronjob to run daily.
 
 ## Setup Instructions
 

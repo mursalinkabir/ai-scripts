@@ -24,11 +24,17 @@ from datetime import date, timedelta
 load_dotenv()
 
 def get_top_technology_news():
-    """
-    Fetches top 10 technology news from the past day in the US.
+    """Fetches the top 10 technology news articles from the previous day in the
+    United States.
+
+    This function queries the NewsAPI for the top 10 technology headlines,
+    sorted by popularity. It requires the `NEWS_API_KEY` environment variable
+    to be set.
 
     Returns:
-        list: A list of news articles, or an empty list if an error occurs.
+        list: A list of dictionaries, where each dictionary represents a news
+              article. Returns an empty list if the API key is not set or if
+              an error occurs during the API request.
     """
     api_key = os.getenv("NEWS_API_KEY")
     if not api_key:
@@ -59,12 +65,15 @@ def get_top_technology_news():
         return []
 
 def post_to_slack(channel_id, message):
-    """
-    Posts a message to a Slack channel.
+    """Posts a message to a specified Slack channel.
+
+    This function sends a message to a Slack channel using the Slack WebClient
+    API. It requires the `SLACK_BOT_TOKEN` environment variable to be set.
 
     Args:
-        channel_id (str): The ID of the Slack channel.
-        message (str): The message to post.
+        channel_id (str): The ID of the Slack channel where the message will be
+                          posted.
+        message (str): The content of the message to post.
     """
     slack_bot_token = os.getenv("SLACK_BOT_TOKEN")
     if not slack_bot_token:
